@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import './styles.css';
+import React from 'react';
+import Image from './components/Image';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      photos: [],
+      loading: true,
+    };
+  }
+
+  // Use the required lifecycle methods here
+  componentDidMount() {
+    fetch('https://jsonplaceholder.typicode.com/albums/1/photos')
+      .then((res) => res.json())
+      .then((data) => this.setState({ photos: data, loading: false }));
+  }
+
+  render() {
+    // Display loading status here
+    const { loading } = this.state;
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+    return (
+      <div className="App">
+        {this.state.photos.map((photo) => {
+          return <Image key={photo.id} photo={photo} />;
+        })}
+      </div>
+    );
+  }
 }
-
-export default App;
